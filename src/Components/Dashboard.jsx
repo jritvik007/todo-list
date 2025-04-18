@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -21,16 +21,19 @@ import ListItemText from "@mui/material/ListItemText";
 import TaskTable from "./TaskTable";
 import { useNavigate } from "react-router-dom";
 import LogoutIcon from "@mui/icons-material/Logout";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import { ThemeModeContext } from "../Context/ThemeContext";
 
 const drawerWidth = 240;
 
 const Main = styled("main")(() => ({
   flexGrow: 1,
-  padding: "24px", // theme.spacing(3)
+  padding: "24px", 
 }));
 
 const AppBar = styled(MuiAppBar)(() => ({
-  zIndex: 1301, // ensure AppBar stays above the Drawer
+  zIndex: 1301, 
 }));
 
 const DrawerHeader = styled("div")(({ theme }) => ({
@@ -41,11 +44,12 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-end",
 }));
 
-export default function Dashboard() {
+function Dashboard() {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("loggedInUser"));
+  const {mode , toggleTheme} = useContext(ThemeModeContext);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -69,7 +73,7 @@ export default function Dashboard() {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar position="fixed">
+      <AppBar position="fixed" >
         <Toolbar>
           <IconButton
             color="inherit"
@@ -81,13 +85,21 @@ export default function Dashboard() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap sx={{ flexGrow: 1 }}>
-            ToDo Dashboard
+            Dashboard
           </Typography>
           {user && (
-            <Typography variant="h6" sx={{ flexGrow: 0, marginLeft: 2 }}>
+            <Typography sx={{ flexGrow: 0, marginLeft: 2 }}>
               {user.email}
             </Typography>
           )}
+          <IconButton
+            color="inherit"
+            aria-label="toggle theme"
+            title="Toggle Theme"
+            edge="end"
+            onClick={toggleTheme}>
+            { mode === "dark" ? <LightModeIcon /> : <DarkModeIcon />}
+          </IconButton>
         </Toolbar>
       </AppBar>
 
@@ -100,7 +112,7 @@ export default function Dashboard() {
             boxSizing: "border-box",
           },
         }}
-        variant="temporary" // Makes it overlay instead of pushing content
+        variant="temporary" 
         anchor="left"
         open={open}
         onClose={handleDrawerClose}
@@ -117,7 +129,7 @@ export default function Dashboard() {
               <ListItemButton
                 onClick={() => {
                   navigate(path);
-                  handleDrawerClose(); // close drawer on navigation
+                  handleDrawerClose(); 
                 }}
               >
                 <ListItemText primary={text} />
@@ -154,3 +166,5 @@ export default function Dashboard() {
     </Box>
   );
 }
+
+export default Dashboard;

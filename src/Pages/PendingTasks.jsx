@@ -13,6 +13,9 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Card,
+  CardContent,
+  useMediaQuery,
 } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -41,8 +44,9 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-end",
 }));
 
-export default function PendingTasks() {
+function PendingTasks() {
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [open, setOpen] = useState(false);
   const [pendingTasks, setPendingTasks] = useState([]);
   const navigate = useNavigate();
@@ -143,23 +147,50 @@ export default function PendingTasks() {
 
       <Main>
         <DrawerHeader />
+
         <Box sx={{ width: "100%" }}>
-          <DataGrid
-            rows={pendingTasks}
-            columns={columns}
-            pageSize={10}
-            rowsPerPageOptions={[10, 25, 50]}
-            autoHeight
-            disableSelectionOnClick
-            sx={{
-              "& .MuiDataGrid-columnHeaders": {
-                backgroundColor: "#f5f5f5",
-                fontWeight: "bold",
-              },
-            }}
-          />
+          {isMobile ? (
+            <Box display="flex" flexDirection="column" gap={2}>
+              {pendingTasks.map((task) => (
+                <Card key={task.id} variant="outlined">
+                  <CardContent>
+                    <Typography variant="subtitle1"><strong>Name:</strong> {task.name}</Typography>
+                    <Typography variant="subtitle1"><strong>Email:</strong> {task.email}</Typography>
+                    <Typography variant="subtitle1"><strong>Phone:</strong> {task.phone}</Typography>
+                    <Typography variant="subtitle1"><strong>Department:</strong> {task.department}</Typography>
+                    <Typography variant="subtitle1"><strong>Position:</strong> {task.position}</Typography>
+                    <Typography variant="subtitle1"><strong>Task:</strong> {task.taskName}</Typography>
+                    <Typography variant="subtitle1"><strong>Assigned By:</strong> {task.assignedBy}</Typography>
+                    <Typography variant="subtitle1"><strong>Start Date:</strong> {task.startDate}</Typography>
+                    <Typography variant="subtitle1"><strong>Deadline:</strong> {task.deadline}</Typography>
+                    <Typography variant="subtitle1">
+                      <strong>Status:</strong>{" "}
+                      <span style={{ color: "red" , fontWeight: "bold"}}>{task.status}</span>
+                    </Typography>
+                  </CardContent>
+                </Card>
+              ))}
+            </Box>
+          ) : (
+            <DataGrid
+              rows={pendingTasks}
+              columns={columns}
+              pageSize={10}
+              rowsPerPageOptions={[10, 25, 50]}
+              autoHeight
+              disableSelectionOnClick
+              sx={{
+                "& .MuiDataGrid-columnHeaders": {
+                  backgroundColor: "#f5f5f5",
+                  fontWeight: "bold",
+                },
+              }}
+            />
+          )}
         </Box>
       </Main>
     </Box>
   );
 }
+
+export default PendingTasks;

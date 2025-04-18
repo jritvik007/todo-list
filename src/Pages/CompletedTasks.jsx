@@ -13,6 +13,10 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  useMediaQuery,
+  Card,
+  CardContent,
+  Grid,
 } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -41,8 +45,9 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-end",
 }));
 
-export default function CompletedTasks() {
+function CompletedTasks() {
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [open, setOpen] = useState(false);
   const [completedTasks, setCompletedTasks] = useState([]);
   const navigate = useNavigate();
@@ -143,24 +148,69 @@ export default function CompletedTasks() {
 
       <Main>
         <DrawerHeader />
-        
         <Box sx={{ width: "100%" }}>
-          <DataGrid
-            rows={completedTasks}
-            columns={columns}
-            pageSize={10}
-            rowsPerPageOptions={[10, 25, 50]}
-            autoHeight
-            disableSelectionOnClick
-            sx={{
-              "& .MuiDataGrid-columnHeaders": {
-                backgroundColor: "#f5f5f5",
-                fontWeight: "bold",
-              },
-            }}
-          />
+          {isMobile ? (
+            <Grid container spacing={2}>
+              {completedTasks.map((task) => (
+                <Grid item xs={12} sm={6} key={task.id}>
+                  <Card variant="outlined">
+                  <CardContent>
+  <Typography variant="subtitle1">
+    <strong>Name:</strong> {task.name}
+  </Typography>
+  <Typography variant="subtitle1">
+    <strong>Email:</strong> {task.email}
+  </Typography>
+  <Typography variant="subtitle1">
+    <strong>Phone:</strong> {task.phone}
+  </Typography>
+  <Typography variant="subtitle1">
+    <strong>Department:</strong> {task.department}
+  </Typography>
+  <Typography variant="subtitle1">
+    <strong>Position:</strong> {task.position}
+  </Typography>
+  <Typography variant="subtitle1">
+    <strong>Task:</strong> {task.taskName}
+  </Typography>
+  <Typography variant="subtitle1">
+    <strong>Assigned By:</strong> {task.assignedBy}
+  </Typography>
+  <Typography variant="subtitle1">
+    <strong>Start Date:</strong> {task.startDate}
+  </Typography>
+  <Typography variant="subtitle1">
+    <strong>Deadline:</strong> {task.deadline}
+  </Typography>
+  <Typography variant="subtitle1">
+    <strong>Status:</strong>{" "}
+    <span style={{ color: "green" , fontWeight: "bold"}}>{task.status}</span>
+  </Typography>
+</CardContent>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          ) : (
+            <DataGrid
+              rows={completedTasks}
+              columns={columns}
+              pageSize={10}
+              rowsPerPageOptions={[10, 25, 50]}
+              autoHeight
+              disableSelectionOnClick
+              sx={{
+                "& .MuiDataGrid-columnHeaders": {
+                  backgroundColor: "#f5f5f5",
+                  fontWeight: "bold",
+                },
+              }}
+            />
+          )}
         </Box>
       </Main>
     </Box>
   );
 }
+
+export default CompletedTasks;
